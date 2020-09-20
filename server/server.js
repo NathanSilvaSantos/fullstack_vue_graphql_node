@@ -8,7 +8,16 @@ const typeDefs = `
     }
 
     type Query {
-        items (type: String): [Item]
+        items(type: String): [Item]
+    }
+
+    input ItemInput {
+        type: String
+        description: String
+    }
+
+    type Mutation {
+        saveItem(item: ItemImput): Item
     }
 `;
 
@@ -26,6 +35,14 @@ const resolvers = {
         items(_, args) {
             return items.filter(item => item.type === args.type);
         },
+    },
+    Mutation: {
+        saveItem(_, args) {
+            const item = args.item;
+            item.id = Math.floor(Math.random() * 1000);
+            items.push(item);
+            return item;
+        }
     }
 };
 

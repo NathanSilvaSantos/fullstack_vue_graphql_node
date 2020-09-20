@@ -52,7 +52,28 @@ export default {
 	},
 	methods: {
 		addPrefix(prefix){
-			this.prefixes.push(prefix);
+      this.prefixes.push(prefix);
+      axios({
+        url: "http://localhost:4000",
+        method: "post",
+        data: {
+          query: `
+            mutation ($item: ItemInput) {
+              saveItem(item: $item) {
+                id
+                type
+                description
+              }
+            }
+          `,
+          variables: {
+            item: {
+              type: "prefix",
+              description: prefix
+            }
+          }
+        }
+      });
     },
     
     deletePrefix(prefix) {
