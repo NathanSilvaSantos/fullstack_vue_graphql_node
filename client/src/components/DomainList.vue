@@ -59,7 +59,7 @@ export default {
         data: {
           query: `
             mutation ($item: ItemInput) {
-              saveItem(item: $item) {
+              newPrefix: saveItem(item: $item) {
                 id
                 type
                 description
@@ -86,6 +86,46 @@ export default {
 
     deleteSufix(sufix) {
       this.sufixes.splice(this.sufixes.indexOf(sufix), 1); 
+    },
+
+    getPrefixes() {
+      axios({
+        url: "http://localhost:4000",
+        method: "post",
+        data: {
+          query:`
+              {
+                prefixes: items (type: "prefix") {
+                  id
+                  type
+                  description
+                }
+              }`
+        },
+      }).then(response => {
+        const query = response.data;
+        this.prefixes = query.data.prefixes.map(prefix => prefix.description);
+      });
+    },
+
+    getSufixes() {
+      axios({
+        url: "http://localhost:4000",
+        method: "post",
+        data: {
+          query:`
+              {
+                sufixes: items (type: "prefix") {
+                  id
+                  type
+                  description
+                }
+              }`
+        },
+      }).then(response => {
+        const query = response.data;
+        this.sufixes = query.data.sufixes.map(sufix => sufix.description);
+      });
     }
   },
   computed: {
@@ -107,29 +147,7 @@ export default {
     }
   },
   created() {
-    axios({
-      url: "http://localhost:4000",
-      method: "post",
-      data: {
-        query:`
-            {
-              prefixes: items (type: "prefix") {
-                id
-                type
-                description
-              }
-              sufixes: items (type: "sufix") {
-                id
-                type
-                description
-              }
-            }`
-      },
-    }).then(response => {
-      const query = response.data;
-      this.prefixes = query.data.prefixes.map(prefix => prefix.description);
-      this.sufixes = query.data.sufixes.map(sufix => sufix.description);
-    });
+    
   }
 };
 </script>
